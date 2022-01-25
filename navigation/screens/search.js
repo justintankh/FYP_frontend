@@ -11,6 +11,8 @@ import {
 	TouchableOpacity,
 	Dimensions,
 } from "react-native";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
+
 import { BarCodeScanner } from "expo-barcode-scanner";
 const cheerio = require("cheerio");
 import { Camera } from "expo-camera";
@@ -431,6 +433,59 @@ export default function SearchScreen(props) {
 		return <View style={styles.options}>{dates}</View>;
 	}
 
+	function renderRecognizedDates2() {
+		return (
+			<FlatList
+				data={arrayExpiryDate}
+				style={[
+					styles.options,
+					{
+						height: (Deviceheight / 100) * 10,
+						width: (Devicewidth / 100) * 70,
+						marginTop: (Deviceheight / 100) * 2,
+						// elevation: 3,
+						// zIndex: 3,
+					},
+				]}
+				horizontal={true}
+				renderItem={({ item, index }) => {
+					return (
+						<View style={[styles.button]} key={index}>
+							<Button
+								key={index}
+								disabled={isLoading}
+								title={item}
+								onPress={() => {
+									setExpiryDate(arrayRecognizedExpiryDate[index]);
+									// Date formatting
+									let tempDate = new Date(arrayRecognizedExpiryDate[index]);
+									setDate(tempDate);
+									let todayDate = new Date();
+									let lTime = Math.ceil((tempDate - todayDate) / (1000 * 60 * 60 * 24));
+									try {
+										var tempArray = arrayRecognizedExpiryDate[index].split("-");
+										tempArray.push(tempArray[1]);
+										tempArray.push(tempArray[0]);
+										delete tempArray[1];
+										delete tempArray[0];
+										tempArray = tempArray.filter((n) => n);
+										setDateText(tempArray.join("/") + "\n" + lTime + " DAYS LEFT");
+										console.log(
+											`\narrayExpiryDate[${index}]: ${arrayExpiryDate[index]}\narrayRecognizedExpiryDate[${index}]: ${arrayRecognizedExpiryDate[index]}`
+										);
+									} catch (err) {
+										isRenderCamera ? setIsRenderCamera(false) : setIsRenderCamera(true);
+										activateBarcodeCam ? setactivateBarcodeCam(false) : null;
+									}
+								}}
+							/>
+						</View>
+					);
+				}}
+			/>
+		);
+	}
+
 	async function createPerishable() {
 		var username = props.route.params.username;
 		if (titleResult.length > 0 && expiryDate.length > 0) {
@@ -609,8 +664,7 @@ export default function SearchScreen(props) {
 
 			<View style={styles.dateSelectionView}>
 				{isCaptured ? <Text style={styles.dateSelectionText}>Select the correct date:</Text> : null}
-
-				{isCaptured ? renderRecognizedDates() : null}
+				{isCaptured ? renderRecognizedDates2() : null}
 			</View>
 
 			<View style={styles.proceedButton}>
@@ -752,9 +806,9 @@ const styles = StyleSheet.create({
 		right: Devicewidth / 30,
 	},
 	options: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		padding: 10,
+		// flexDirection: "row",
+		// justifyContent: "space-between",
+		// padding: 10,
 		zIndex: 1,
 		elevation: 1,
 	},

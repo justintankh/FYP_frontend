@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -14,6 +14,7 @@ import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { NavigationContainer, useIsFocused } from "@react-navigation/native";
 import Card from "../../src/InventoryItems";
 import { AntDesign } from "@expo/vector-icons";
+import LottieView from "lottie-react-native";
 
 export default function InventoryScreen(props) {
 	const username = props.route.params.username;
@@ -25,6 +26,8 @@ export default function InventoryScreen(props) {
 
 	const [selectedPCode, setSelectedPCode] = useState([]);
 	const [forceUpdate, setForceUpdate] = useState(0);
+
+	const animation = useRef(null);
 
 	useEffect(() => {
 		console.log("\n Inventory.js Focused");
@@ -81,7 +84,18 @@ export default function InventoryScreen(props) {
 	}
 
 	function renderInventory() {
-		// console.log("Selected P_Codes:", selectedPCode);
+		// Bring back Navigation bar
+		props.navigation.setOptions({
+			tabBarStyle: {
+				height: 70,
+				position: "absolute",
+				display: "flex",
+				bottom: 16,
+				right: 16,
+				left: 16,
+				borderRadius: 10,
+			},
+		});
 		return (
 			<View style={styles.container}>
 				{/* <Text style={{ alignSelf: "center", fontSize: 20 }}>{selectedPCode.length}</Text> */}
@@ -89,26 +103,6 @@ export default function InventoryScreen(props) {
 					source={require("../../assets/images/photo1.png")}
 					imageStyle={{ opacity: 0.5 }}
 					style={styles.bgImage}>
-					{/* <Text
-						style={{
-							position: "absolute",
-							top: Deviceheight / 15,
-							fontFamily: "AvenirNext",
-							fontSize: 30,
-							// paddingTop: Deviceheight / 10,
-							width: "50%",
-							textAlign: "center",
-							color: "rgba(255, 255, 255, 0.75)",
-							// fontWeight: "bold",
-							borderWidth: 2,
-							borderStyle: "dashed",
-							borderColor: "white",
-							borderTopColor: "transparent",
-							borderBottomColor: "transparent",
-							// backgroundColor: "rgba(0, 0, 0, 0.25)",
-						}}>
-						Inventory
-					</Text> */}
 					<FlatList
 						data={inventorylist}
 						style={styles.InventoryBox}
@@ -223,13 +217,56 @@ export default function InventoryScreen(props) {
 	}
 
 	function renderLoading() {
+		// Hide navigation bar
+		props.navigation.setOptions({ tabBarStyle: { display: "none" } });
 		return (
-			<View style={styles.container}>
-				<ImageBackground source={require("../../assets/images/photo1.png")} style={styles.bgImage}>
-					<FlatList data={inventorylist} style={styles.InventoryBox} />
-					<Text style={Object.assign({}, styles.whiteText, styles.mainText)}>{bufferText}</Text>
-					<View style={styles.menu}></View>
-				</ImageBackground>
+			<View style={styles.animationContainer}>
+				<Text
+					style={{
+						position: "absolute",
+						top: Deviceheight / 5,
+						fontFamily: "AvenirNext",
+						fontSize: 30,
+						// paddingTop: Deviceheight / 10,
+						width: "50%",
+						textAlign: "center",
+						color: "rgba(0, 0, 0, 0.75)",
+						borderWidth: 2,
+						borderStyle: "dashed",
+						borderColor: "black",
+						borderTopColor: "white",
+						borderBottomColor: "white",
+						// backgroundColor: "rgba(0, 0, 0, 0.25)",
+					}}>
+					Fetching Inventory
+				</Text>
+				<LottieView
+					ref={animation}
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 3,
+						width: Devicewidth / 1.2,
+						elevation: 1,
+						zIndex: 1,
+						// height: 400,
+						// backgroundColor: "black",
+					}}
+					loop={true}
+					autoPlay={true}
+					source={require("../../assets/lottie/73480-shopping-cart.json")}
+				/>
+				<Text
+					style={{
+						position: "absolute",
+						fontSize: 30,
+						fontFamily: "Caveat",
+						top: (Deviceheight / 100) * 75,
+						width: "70%",
+						textAlign: "center",
+						color: "rgba(0, 0, 0, 0.75)",
+					}}>
+					Loading..
+				</Text>
 			</View>
 		);
 	}
@@ -302,5 +339,15 @@ const styles = StyleSheet.create({
 	},
 	space: {
 		paddingTop: 20,
+	},
+	animationContainer: {
+		backgroundColor: "white",
+		alignItems: "center",
+		justifyContent: "center",
+		flex: 1,
+		width: Devicewidth,
+		height: Deviceheight,
+		elevation: 3,
+		zIndex: 3,
 	},
 });
