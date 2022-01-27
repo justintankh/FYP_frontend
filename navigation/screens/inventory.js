@@ -9,6 +9,8 @@ import {
 	Button,
 	Alert,
 	TouchableOpacity,
+	StatusBar,
+	Touchable,
 } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { NavigationContainer, useIsFocused } from "@react-navigation/native";
@@ -21,7 +23,9 @@ export default function InventoryScreen(props) {
 	// console.log(props);
 	//check user code, and fetch his inventory list
 	const [inventorylist, setInventorylist] = useState(null);
-	const [bufferText, setBufferText] = useState("Loading your Inventory");
+
+	const [isInvEmpty, setInvEmpty] = useState(false);
+
 	const focused = useIsFocused();
 
 	const [selectedPCode, setSelectedPCode] = useState([]);
@@ -32,23 +36,47 @@ export default function InventoryScreen(props) {
 	useEffect(() => {
 		console.log("\n Inventory.js Focused");
 		setInventorylist(null);
+		setInvEmpty(false);
 		getBasketDetails();
 		setSelectedPCode([]);
-		// getBasketDetailsTest()
-		// props.navigation.setOptions({ tabBarStyle: { display: "relative" } });
-		// props.navigation.setOptions({ tabBarStyle: { display: "none" } });
 	}, [focused]);
 
 	function getBasketDetails() {
+		// Hide navigation bar
+		props.navigation.setOptions({ tabBarStyle: { display: "none" } });
+
 		console.log(`Basket username: ${username}`);
 		return fetch("https://scanlah.herokuapp.com/api/get_user_perish" + "?username=" + username).then((response) => {
 			if (response.ok) {
 				return response.json().then((data) => {
-					// console.log("Basket: ", data);
+					// Bring back Navigation bar
+					props.navigation.setOptions({
+						tabBarStyle: {
+							height: 70,
+							position: "absolute",
+							display: "flex",
+							bottom: 16,
+							right: 16,
+							left: 16,
+							borderRadius: 10,
+						},
+					});
 					setInventorylist(data);
 				});
 			} else {
-				setBufferText("No items in Inventory");
+				// Bring back Navigation bar
+				props.navigation.setOptions({
+					tabBarStyle: {
+						height: 70,
+						position: "absolute",
+						display: "flex",
+						bottom: 16,
+						right: 16,
+						left: 16,
+						borderRadius: 10,
+					},
+				});
+				setInvEmpty(true);
 			}
 		});
 	}
@@ -83,21 +111,143 @@ export default function InventoryScreen(props) {
 			});
 	}
 
+	function cartAnimation() {
+		return (
+			<View style={styles.animationContainer}>
+				<Text
+					style={{
+						position: "absolute",
+						top: Deviceheight / 5,
+						fontFamily: "AvenirNext",
+						fontSize: 30,
+						// paddingTop: Deviceheight / 10,
+						width: "50%",
+						textAlign: "center",
+						color: "rgba(0, 0, 0, 0.75)",
+						borderWidth: 2,
+						borderStyle: "dashed",
+						borderColor: "black",
+						borderTopColor: "white",
+						borderBottomColor: "white",
+						// backgroundColor: "rgba(0, 0, 0, 0.25)",
+					}}>
+					Fetching Inventory
+				</Text>
+				<LottieView
+					ref={animation}
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 3,
+						width: Devicewidth / 1.2,
+						elevation: 1,
+						zIndex: 1,
+						// height: 400,
+						// backgroundColor: "black",
+					}}
+					loop={true}
+					autoPlay={true}
+					source={require("../../assets/lottie/73480-shopping-cart.json")}
+				/>
+				<Text
+					style={{
+						position: "absolute",
+						fontSize: 30,
+						fontFamily: "Caveat",
+						top: (Deviceheight / 100) * 75,
+						width: "70%",
+						textAlign: "center",
+						color: "rgba(0, 0, 0, 0.75)",
+					}}>
+					Loading..
+				</Text>
+			</View>
+		);
+	}
+
+	function emptyAnimation() {
+		return (
+			<View style={styles.animationContainer}>
+				<Text
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 25,
+						fontFamily: "AvenirNext",
+						fontSize: 25,
+						// fontWeight: "bold",
+						width: "80%",
+						textAlign: "center",
+						color: "rgba(0, 0, 0, 0.75)",
+					}}>
+					Your inventory is empty
+				</Text>
+				<Text
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 30,
+						fontFamily: "AvenirNext",
+						fontSize: 20,
+						// fontWeight: "bold",
+						width: "100%",
+						textAlign: "center",
+						color: "rgba(0, 0, 0, 0.75)",
+					}}>
+					Scan some items to start tracking!
+				</Text>
+				<LottieView
+					ref={animation}
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 0,
+						// width: (Devicewidth / 100) * 100,
+						elevation: 1,
+						zIndex: 1,
+						// height: 400,
+						// backgroundColor: "black",
+					}}
+					loop={true}
+					autoPlay={true}
+					source={require("../../assets/lottie/5081-empty-box.json")}
+				/>
+				<TouchableOpacity
+					onPress={() => props.navigation.navigate("Scan")}
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 75,
+						height: (Deviceheight / 100) * 5,
+						width: (Devicewidth / 100) * 80,
+
+						elevation: 3,
+						zIndex: 3,
+						backgroundColor: "darkorange",
+						borderRadius: 5,
+						justifyContent: "center",
+						// borderColor: "red",
+						// borderWidth: 2,
+						// shadowColor: "transparent",
+					}}>
+					<Text
+						style={{
+							fontSize: 20,
+							width: "100%",
+							// fontFamily: "AvenirNext",
+							textAlign: "center",
+							color: "rgba(255, 255, 255, 1)",
+						}}>
+						Scan items
+					</Text>
+				</TouchableOpacity>
+			</View>
+		);
+	}
+
+	function renderLoading() {
+		return isInvEmpty ? emptyAnimation() : cartAnimation();
+	}
+
 	function renderInventory() {
-		// Bring back Navigation bar
-		props.navigation.setOptions({
-			tabBarStyle: {
-				height: 70,
-				position: "absolute",
-				display: "flex",
-				bottom: 16,
-				right: 16,
-				left: 16,
-				borderRadius: 10,
-			},
-		});
 		return (
 			<View style={styles.container}>
+				<StatusBar barStyle="light-content" />
 				{/* <Text style={{ alignSelf: "center", fontSize: 20 }}>{selectedPCode.length}</Text> */}
 				<ImageBackground
 					source={require("../../assets/images/photo1.png")}
@@ -212,61 +362,6 @@ export default function InventoryScreen(props) {
 						)}
 					</View>
 				</ImageBackground>
-			</View>
-		);
-	}
-
-	function renderLoading() {
-		// Hide navigation bar
-		props.navigation.setOptions({ tabBarStyle: { display: "none" } });
-		return (
-			<View style={styles.animationContainer}>
-				<Text
-					style={{
-						position: "absolute",
-						top: Deviceheight / 5,
-						fontFamily: "AvenirNext",
-						fontSize: 30,
-						// paddingTop: Deviceheight / 10,
-						width: "50%",
-						textAlign: "center",
-						color: "rgba(0, 0, 0, 0.75)",
-						borderWidth: 2,
-						borderStyle: "dashed",
-						borderColor: "black",
-						borderTopColor: "white",
-						borderBottomColor: "white",
-						// backgroundColor: "rgba(0, 0, 0, 0.25)",
-					}}>
-					Fetching Inventory
-				</Text>
-				<LottieView
-					ref={animation}
-					style={{
-						position: "absolute",
-						top: (Deviceheight / 100) * 3,
-						width: Devicewidth / 1.2,
-						elevation: 1,
-						zIndex: 1,
-						// height: 400,
-						// backgroundColor: "black",
-					}}
-					loop={true}
-					autoPlay={true}
-					source={require("../../assets/lottie/73480-shopping-cart.json")}
-				/>
-				<Text
-					style={{
-						position: "absolute",
-						fontSize: 30,
-						fontFamily: "Caveat",
-						top: (Deviceheight / 100) * 75,
-						width: "70%",
-						textAlign: "center",
-						color: "rgba(0, 0, 0, 0.75)",
-					}}>
-					Loading..
-				</Text>
 			</View>
 		);
 	}

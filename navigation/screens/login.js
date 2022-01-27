@@ -8,7 +8,8 @@ export default function LoginScreen({ navigation, route }) {
 	const [loggedIn, setLogin] = useState(false);
 	const [username, setUsername] = useState(null);
 	const [errorMsg, setErrorMsg] = useState(false);
-	const [textField, setTextField] = useState("justintankh");
+	const [textField, setTextField] = useState("DEMO22");
+	const [signUp, setSignUp] = useState(false);
 
 	passiveCheckLogin();
 	console.log(`Passive login state: ${loggedIn}, ${username}`);
@@ -74,20 +75,102 @@ export default function LoginScreen({ navigation, route }) {
 						placeholder="Enter Username"
 					/>
 					{errorMsg ? <Text style={styles.error}>Incorrect username.</Text> : null}
-					<View style={styles.button}>
-						<Button
-							title="Submit"
-							onPress={() => {
-								checkLogin();
-							}}
-						/>
+					<View style={styles.options}>
+						<View style={styles.button}>
+							<Button
+								title="Signup"
+								color="darkorange"
+								onPress={() => {
+									setSignUp(true);
+								}}
+							/>
+						</View>
+						<View style={styles.button}>
+							<Button
+								title="Submit"
+								// color="cyan"
+								onPress={() => {
+									checkLogin();
+								}}
+							/>
+						</View>
 					</View>
 				</ImageBackground>
 			</View>
 		);
 	}
 
-	return loggedIn ? <MainContainer username={username} /> : renderLoginPage();
+	function checkSignUp() {
+		const requestOptions = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				username: textField,
+			}),
+		};
+		fetch("http://scanlah.herokuapp.com/api/signup", requestOptions)
+			.then((response) => {
+				response.json().then((data) => {
+					if (response.ok) {
+						console.log("response ok");
+						console.log("data.username:", data.username);
+						setUsername(data.username);
+						setLogin(true);
+					} else {
+						console.log("response !ok");
+						setLogin(false);
+						setErrorMsg(data["Bad request"]);
+					}
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}
+
+	function renderSignUpPage() {
+		return (
+			<View style={styles.container}>
+				<ImageBackground
+					source={require("../../assets/images/photo1.png")}
+					style={styles.backgroundImage}
+					resizeMode="cover">
+					<Text style={Object.assign({}, styles.whiteText, styles.mainText)}>Signup with CheckIt !</Text>
+					<TextInput
+						style={styles.input}
+						onChangeText={(change) => {
+							setTextField(change);
+						}}
+						value={textField}
+						placeholder="Register Username"
+					/>
+					{errorMsg ? <Text style={styles.error}>{errorMsg}.</Text> : null}
+					<View style={styles.options}>
+						<View style={styles.button}>
+							<Button
+								title="Cancel"
+								color="black"
+								onPress={() => {
+									setSignUp(false);
+								}}
+							/>
+						</View>
+						<View style={styles.button}>
+							<Button
+								title="Create"
+								color="darkorange"
+								onPress={() => {
+									checkSignUp();
+								}}
+							/>
+						</View>
+					</View>
+				</ImageBackground>
+			</View>
+		);
+	}
+
+	return loggedIn ? <MainContainer username={username} /> : signUp ? renderSignUpPage() : renderLoginPage();
 }
 
 const styles = StyleSheet.create({
@@ -133,5 +216,12 @@ const styles = StyleSheet.create({
 		color: "red",
 		marginBottom: 20,
 		fontSize: 14,
+	},
+	options: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		padding: 10,
+		// zIndex: 1,
+		// elevation: 1,
 	},
 });

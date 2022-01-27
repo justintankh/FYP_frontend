@@ -44,6 +44,7 @@ export default function RecipeScreen(props) {
 	const [focusedRecipe, setFocusedRecipe] = useState(blankData[0]);
 
 	const [isSelected, setSelected] = selectedPCode ? useState(true) : useState(false);
+	const [isInvEmpty, setInvEmpty] = useState(false);
 
 	const animation = useRef(null);
 
@@ -54,8 +55,15 @@ export default function RecipeScreen(props) {
 		console.log("basket length:\n", basket.length);
 		// selectedPCode ? console.log("basket data:", basket) : null;
 		setRecipeFetching(false);
-		// Set as true during production
+		// (?) Set as true during production
 		setLoading(false);
+
+		// Forced useBasket for First instance recipe open
+		// AND Empty inventory
+		if (isInvEmpty == true) {
+			console.log("--- FOCUS: forced basket use effect  ---");
+			getBasketDetails();
+		}
 	}, [focused]);
 
 	//When selectedPCode updates
@@ -92,7 +100,8 @@ export default function RecipeScreen(props) {
 			// TODO: HERE RUNS WHEN BASKET UPDATES
 			// Should we run regardless of Basket[0] updates?
 			if (data == blankData) {
-				return console.log("BASKET UPDATE: data is blankData, Ignoring.. ");
+				console.log("BASKET UPDATE: data is blankData, Ignoring.. ");
+				return;
 			}
 			console.log(animation);
 			fetch_recipes();
@@ -107,19 +116,20 @@ export default function RecipeScreen(props) {
 					console.log("basket fetched: ", data.length);
 					setBasket(data);
 					setBasketLoaded(true);
+					setInvEmpty(false);
 				});
 			} else {
 				// setBufferText("No items in Inventory");
+				setInvEmpty(true);
 			}
 		});
 	}
 
 	async function fetch_recipes() {
-		console.log(`Fetch query selected -> ${isSelected ? "SELECTED" : "ALL"}`);
-		// console.log("Fetching props: ");
-		// console.log(props);
-		console.log("Hiding tabbar: ");
 		props.navigation.setOptions({ tabBarStyle: { display: "none" } });
+		console.log(`Fetch query selected -> ${isSelected ? "SELECTED" : "ALL"}`);
+		console.log("Hiding tabbar: ");
+		setInvEmpty(false);
 		setRecipeFetching(true);
 		setLoading(true);
 		if (isRecipeFetching) {
@@ -193,6 +203,82 @@ export default function RecipeScreen(props) {
 		);
 	}
 
+	function emptyAnimation() {
+		return (
+			<View style={styles.animationContainer}>
+				<Text
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 25,
+						fontFamily: "AvenirNext",
+						fontSize: 25,
+						// fontWeight: "bold",
+						width: "80%",
+						textAlign: "center",
+						color: "rgba(0, 0, 0, 0.75)",
+					}}>
+					Your inventory is empty
+				</Text>
+				<Text
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 30,
+						fontFamily: "AvenirNext",
+						fontSize: 20,
+						// fontWeight: "bold",
+						width: "100%",
+						textAlign: "center",
+						color: "rgba(0, 0, 0, 0.75)",
+					}}>
+					Scan some items to start tracking!
+				</Text>
+				<LottieView
+					ref={animation}
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 0,
+						// width: (Devicewidth / 100) * 100,
+						elevation: 1,
+						zIndex: 1,
+						// height: 400,
+						// backgroundColor: "black",
+					}}
+					loop={true}
+					autoPlay={true}
+					source={require("../../assets/lottie/5081-empty-box.json")}
+				/>
+				<TouchableOpacity
+					onPress={() => props.navigation.navigate("Scan")}
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 75,
+						height: (Deviceheight / 100) * 5,
+						width: (Devicewidth / 100) * 80,
+
+						elevation: 3,
+						zIndex: 3,
+						backgroundColor: "darkorange",
+						borderRadius: 5,
+						justifyContent: "center",
+						// borderColor: "red",
+						// borderWidth: 2,
+						// shadowColor: "transparent",
+					}}>
+					<Text
+						style={{
+							fontSize: 20,
+							width: "100%",
+							// fontFamily: "AvenirNext",
+							textAlign: "center",
+							color: "rgba(255, 255, 255, 1)",
+						}}>
+						Scan items
+					</Text>
+				</TouchableOpacity>
+			</View>
+		);
+	}
+
 	return isLoading ? (
 		<View style={styles.animationContainer}>
 			<Text
@@ -242,6 +328,8 @@ export default function RecipeScreen(props) {
 				Loading machine...
 			</Text>
 		</View>
+	) : isInvEmpty ? (
+		emptyAnimation()
 	) : (
 		<Container>
 			<StatusBar barStyle="light-content" />

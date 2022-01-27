@@ -103,14 +103,83 @@ export default function SearchScreen(props) {
 		);
 	}
 
+	function toolKitButtons() {
+		return (
+			<View
+				style={{
+					position: "absolute",
+					bottom: (Deviceheight / 100) * 12,
+					alignItems: "center",
+					justifyContent: "center",
+					overflow: "hidden",
+					height: (Devicewidth / 100) * 90,
+					width: (Devicewidth / 100) * 90,
+					borderRadius: 20,
+				}}>
+				<View
+					style={{
+						position: "absolute",
+						height: (Devicewidth / 100) * 30,
+						width: (Devicewidth / 100) * 13,
+						right: (Devicewidth / 100) * 1.7,
+						backgroundColor: "rgba(255,255,255,0.5)",
+						borderRadius: 10,
+						borderWidth: 2,
+						borderColor: "rgba(255,255,255,0.8)",
+					}}
+				/>
+				<TouchableOpacity
+					style={{
+						position: "absolute",
+						top: (Devicewidth / 100) * 30,
+						right: (Devicewidth / 100) * 2.5,
+					}}
+					onPress={() => {
+						setIsRenderCamera(false);
+						setactivateBarcodeCam(true);
+					}}>
+					<Ionicons name="barcode-outline" size={45} color={"black"} />
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={{
+						position: "absolute",
+						top: (Devicewidth / 100) * 49,
+						right: (Devicewidth / 100) * 3,
+					}}
+					onPress={() => {
+						isRenderCamera ? setIsRenderCamera(false) : setIsRenderCamera(true);
+						activateBarcodeCam ? setactivateBarcodeCam(false) : null;
+					}}>
+					<Ionicons name="camera-outline" size={45} color={"black"} />
+				</TouchableOpacity>
+				<View
+					style={{
+						position: "absolute",
+						top: (Devicewidth / 100) * 30,
+						left: (Devicewidth / 100) * 15,
+						width: (Devicewidth / 100) * 60,
+						height: (Devicewidth / 100) * 30,
+						// borderWidth: 2,
+						// borderRadius: 20,
+						// borderStyle: "dashed",
+						// shadowColor: "transparent",
+						// borderColor: "transparent",
+						// borderBottomColor: "red",
+						// borderTopColor: "red",
+					}}
+				/>
+			</View>
+		);
+	}
+
 	function renderBarcodeUI() {
 		return (
 			<View style={styles.barcodebox}>
 				<TouchableOpacity
 					style={{
 						position: "absolute",
-						top: (Devicewidth / 100) * 5,
-						right: (Devicewidth / 100) * 5,
+						top: (Devicewidth / 100) * 30,
+						right: (Devicewidth / 100) * 2.5,
 						elevation: 3,
 						zIndex: 3,
 					}}
@@ -119,6 +188,20 @@ export default function SearchScreen(props) {
 						setactivateBarcodeCam(true);
 					}}>
 					<Ionicons name="barcode-outline" size={45} color={"orange"} />
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={{
+						position: "absolute",
+						top: (Devicewidth / 100) * 49,
+						right: (Devicewidth / 100) * 3,
+						elevation: 3,
+						zIndex: 3,
+					}}
+					onPress={() => {
+						isRenderCamera ? setIsRenderCamera(false) : setIsRenderCamera(true);
+						activateBarcodeCam ? setactivateBarcodeCam(false) : null;
+					}}>
+					<Ionicons name="camera-outline" size={45} color={"black"} />
 				</TouchableOpacity>
 				<View
 					style={{
@@ -170,16 +253,16 @@ export default function SearchScreen(props) {
 					<TouchableOpacity
 						style={{
 							position: "absolute",
-							top: (Devicewidth / 100) * 5,
-							right: (Devicewidth / 100) * 5,
+							top: (Devicewidth / 100) * 30,
+							right: (Devicewidth / 100) * 2.5,
 							elevation: 3,
 							zIndex: 3,
 						}}
 						onPress={() => {
-							isRenderCamera ? setIsRenderCamera(false) : setIsRenderCamera(true);
-							activateBarcodeCam ? setactivateBarcodeCam(false) : null;
+							setIsRenderCamera(false);
+							setactivateBarcodeCam(true);
 						}}>
-						<Ionicons name="camera-outline" size={45} color={"orange"} />
+						<Ionicons name="barcode-outline" size={45} color={"black"} />
 					</TouchableOpacity>
 					<View
 						style={{
@@ -196,20 +279,26 @@ export default function SearchScreen(props) {
 							borderColor: "transparent",
 							borderBottomColor: "red",
 							borderTopColor: "red",
-							elevation: 2,
-							zIndex: 2,
+							// elevation: 0,
+							// zIndex: 0,
 						}}
 					/>
 					<View style={styles.buttonContainer}>
-						{/* <TouchableOpacity
-							style={styles.cameraButton}
-							onPress={() => {
-								setIsRenderCamera(false);
-							}}>
-							<Text style={styles.text}> Cancel </Text>
-						</TouchableOpacity> */}
 						<TouchableOpacity
-							style={styles.cameraButton}
+							style={{
+								position: "absolute",
+								bottom: 0,
+								right: (Devicewidth / 100) * 1,
+								width: (Devicewidth / 100) * 25,
+								height: (Devicewidth / 100) * 8,
+								alignContent: "center",
+								alignItems: "center",
+								justifyContent: "center",
+								// borderRadius: 5,
+								// borderWidth: 2,
+								// backgroundColor: "rgba(255, 108, 0, 0.8)",
+								// borderColor: "rgba(255,255,255,0.5)",
+							}}
 							onPress={async () => {
 								const r = await takePhoto();
 								setImgSrc({ uri: r.uri });
@@ -220,12 +309,23 @@ export default function SearchScreen(props) {
 								parseDatesFromTexts(textArray);
 								setIsLoading(false);
 							}}>
-							<Text
-								style={[styles.text, { alignSelf: "flex-end", marginRight: (Devicewidth / 100) * 5 }]}>
-								Capture
-							</Text>
+							<Text style={[styles.text, { color: "white" }]}>Capture</Text>
 						</TouchableOpacity>
 					</View>
+					<TouchableOpacity
+						style={{
+							position: "absolute",
+							top: (Devicewidth / 100) * 49,
+							right: (Devicewidth / 100) * 3,
+							elevation: 4,
+							zIndex: 4,
+						}}
+						onPress={() => {
+							isRenderCamera ? setIsRenderCamera(false) : setIsRenderCamera(true);
+							activateBarcodeCam ? setactivateBarcodeCam(false) : null;
+						}}>
+						<Ionicons name="camera-outline" size={45} color={"orange"} />
+					</TouchableOpacity>
 				</Camera>
 			</View>
 		);
@@ -573,32 +673,47 @@ export default function SearchScreen(props) {
 	function renderLoadingSuccess() {
 		setTimeout(() => {
 			setIsRenderLoadingSuccess(false);
-		}, 2000);
+		}, 4000);
 		return (
 			<View style={styles.animationContainer}>
+				<Text
+					style={{
+						position: "absolute",
+						top: (Deviceheight / 100) * 63,
+						fontFamily: "Caveat",
+						fontSize: 25,
+						width: "50%",
+						textAlign: "center",
+						color: "rgba(0, 0, 0, 0.75)",
+						elevation: 2,
+						zIndex: 2,
+					}}>
+					Added Item
+				</Text>
 				<LottieView
 					ref={animation}
 					style={{
-						// position: "absolute",
-						// top: Deviceheight / 8,
-						marginTop: Deviceheight / 30,
+						position: "absolute",
+						top: (Deviceheight / 100) * 14,
 						width: Devicewidth / 1.2,
-						// height: 400,
-						// backgroundColor: "black",
 					}}
 					loop={false}
 					autoPlay={true}
 					source={require("../../assets/lottie/69380-success-check.json")}
-					// source={require("../../assets/lottie/4887-book.json")}
-					// OR find more Lottie files @ https://lottiefiles.com/featured
 				/>
 			</View>
 		);
 	}
 
 	return (
-		<ImageBackground source={require("../../assets/images/photo1.jpg")} style={styles.container} resizeMode="cover">
-			<Text style={styles.mainText}>Register Product</Text>
+		<ImageBackground
+			source={require("../../assets/images/photo1.png")}
+			imageStyle={{ opacity: 0.5 }}
+			style={styles.container}
+			resizeMode="cover">
+			<View style={styles.menu}>
+				<Text style={styles.mainText}>Register Product</Text>
+			</View>
 			<View style={styles.entryContainer1}>
 				<TextInput
 					style={styles.input}
@@ -655,6 +770,8 @@ export default function SearchScreen(props) {
 				</TouchableOpacity>
 			</View>
 
+			{toolKitButtons()}
+
 			{activateBarcodeCam ? renderBarcodeUI() : null}
 
 			{isRenderCamera ? renderCameraUI() : null}
@@ -692,12 +809,29 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 	},
+	menu: {
+		// backgroundColor: "#FF880D",
+		position: "absolute",
+		backgroundColor: "rgba(255, 255, 255, 1)",
+		height: (Deviceheight / 100) * 8,
+		width: Devicewidth,
+		top: (Devicewidth / 100) * 3,
+		borderWidth: 2,
+		borderColor: "rgba(0, 0, 0, 0.1)",
+		justifyContent: "center",
+		alignItems: "center",
+		zIndex: 1,
+		elevation: 1,
+		flexDirection: "row",
+	},
 	entryContainer1: {
 		position: "absolute",
 		alignItems: "center",
 		justifyContent: "center",
 		width: Devicewidth / 1.4,
 		top: (Deviceheight / 100) * 20,
+		elevation: 3,
+		zIndex: 3,
 		// borderColor: "red",
 		// borderWidth: 2,
 		// marginHorizontal: (Deviceheight / 100) * 10,
@@ -708,6 +842,8 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		width: Devicewidth / 1.4,
 		top: (Deviceheight / 100) * 30,
+		elevation: 3,
+		zIndex: 3,
 		// borderColor: "red",
 		// borderWidth: 2,
 		// marginHorizontal: (Deviceheight / 100) * 10,
@@ -741,12 +877,17 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 	},
 	mainText: {
-		position: "absolute",
-		top: (Deviceheight / 100) * 8,
-		fontFamily: "AvenirNext",
-		fontSize: 30,
-		color: "white",
-		margin: 20,
+		// position: "absolute",
+		// top: (Deviceheight / 100) * 0,
+		// left: (Devicewidth / 100) * 0,
+		fontFamily: "Caveat",
+		fontSize: 25,
+		color: "black",
+		elevation: 2,
+		zIndex: 2,
+		// borderWidth: 2,
+		// borderColor: "red",
+		// margin: 20,
 	},
 	whiteText: {
 		color: "#ffffff",
@@ -841,11 +982,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "transparent",
 		flexDirection: "row",
 		margin: 20,
-	},
-	cameraButton: {
-		flex: 1,
-		alignSelf: "flex-end",
-		alignItems: "center",
 	},
 	text: {
 		fontSize: 18,
