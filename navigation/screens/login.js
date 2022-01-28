@@ -8,7 +8,7 @@ export default function LoginScreen({ navigation, route }) {
 	const [loggedIn, setLogin] = useState(false);
 	const [username, setUsername] = useState(null);
 	const [errorMsg, setErrorMsg] = useState(false);
-	const [textField, setTextField] = useState("DEMO22");
+	const [textField, setTextField] = useState("DEMO1");
 	const [signUp, setSignUp] = useState(false);
 
 	passiveCheckLogin();

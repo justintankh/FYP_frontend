@@ -298,7 +298,7 @@ export default function RecipeScreen(props) {
 					borderBottomColor: "white",
 					// backgroundColor: "rgba(0, 0, 0, 0.25)",
 				}}>
-				Ingredients matching
+				Ingredients AI matching
 			</Text>
 			<LottieView
 				ref={animation}

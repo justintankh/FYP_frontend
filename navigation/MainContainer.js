@@ -11,12 +11,18 @@ import InventoryScreen from "./screens/inventory";
 import SearchScreen from "./screens/search";
 import SettingsScreen from "./screens/settings";
 
+import CartScreen from "./screens/cart";
+import ShareScreen from "./screens/share";
+
 const homeName = "Inventory";
 const settingsName = "Setting";
 const scanName = "Scan";
 const recipeName = "Recipes";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+const cartName = "Coming Soon";
+const shareName = "Donate";
 
 const InventoryNavigator = (props) => {
 	console.log("InventoryNavigator Username:", props.route.params.username);
@@ -61,9 +67,13 @@ export default function MainContainer(props) {
 					} else if (rn === recipeName) {
 						iconName = focused ? "clipboard" : "clipboard-outline";
 					} else if (rn === scanName) {
-						iconName = focused ? "scan" : "scan-outline";
+						iconName = focused ? "barcode-outline" : "barcode-sharp";
 					} else if (rn === settingsName) {
 						iconName = focused ? "settings" : "settings-outline";
+					} else if (rn === cartName) {
+						iconName = focused ? "build" : "build-outline";
+					} else if (rn === shareName) {
+						iconName = focused ? "basket" : "basket-outline";
 					}
 					return <Ionicons name={iconName} size={size} color={color} />;
 				},
@@ -74,47 +84,12 @@ export default function MainContainer(props) {
 				labelStyle: { paddingBottom: 10, fontSize: 10, fontWeight: "bold" },
 				style: { padding: 10 },
 			}}>
-			<Tab.Screen
-				name={scanName}
-				initialParams={{ username: props.username }}
-				component={SearchScreen}
-				options={
-					{
-						// tabBarStyle: { display: "none" },
-					}
-				}
-			/>
-			<Tab.Screen
-				name={homeName}
-				initialParams={{ username: props.username }}
-				component={InventoryScreen}
-				options={
-					{
-						// tabBarStyle: { display: "none" },
-					}
-				}
-			/>
-			<Tab.Screen
-				name={recipeName}
-				initialParams={{ username: props.username }}
-				component={RecipeScreen}
-				options={
-					{
-						// tabBarStyle: { display: "none" },
-					}
-				}
-			/>
-
-			<Tab.Screen
-				name={settingsName}
-				initialParams={{ username: props.username }}
-				component={SettingsScreen}
-				options={
-					{
-						// tabBarStyle: { display: "none" },
-					}
-				}
-			/>
+			<Tab.Screen name={scanName} initialParams={{ username: props.username }} component={SearchScreen} />
+			<Tab.Screen name={homeName} initialParams={{ username: props.username }} component={InventoryScreen} />
+			<Tab.Screen name={recipeName} initialParams={{ username: props.username }} component={RecipeScreen} />
+			<Tab.Screen name={cartName} initialParams={{ username: props.username }} component={CartScreen} />
+			{/* <Tab.Screen name={shareName} initialParams={{ username: props.username }} component={ShareScreen} /> */}
+			<Tab.Screen name={settingsName} initialParams={{ username: props.username }} component={SettingsScreen} />
 		</Tab.Navigator>
 	);
 }
