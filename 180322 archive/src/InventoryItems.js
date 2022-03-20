@@ -297,8 +297,8 @@ const Card = ({ info, parent_selectedPCode, parent_setSelectedPCode, parent_forc
 						StatusDetails == "Fresh"
 							? { backgroundColor: "rgba(0, 200, 0, 1)" }
 							: StatusDetails == "Expiring Soon"
-							? { backgroundColor: "rgba(255, 145, 15, 1)" }
-							: { backgroundColor: "rgba(200, 0, 0, 1)" },
+							? { backgroundColor: "rgba(200, 0, 0, 1)" }
+							: { backgroundColor: "rgba(0, 0, 0, 1)" },
 					]}>
 					{leftDays} Days
 				</Text>
@@ -310,8 +310,8 @@ const Card = ({ info, parent_selectedPCode, parent_setSelectedPCode, parent_forc
 						StatusDetails == "Fresh"
 							? { backgroundColor: "rgba(0, 200, 0, 1)" }
 							: StatusDetails == "Expiring Soon"
-							? { backgroundColor: "rgba(255, 145, 15, 1)" }
-							: { backgroundColor: "rgba(200, 0, 0, 1)" },
+							? { backgroundColor: "rgba(200, 0, 0, 1)" }
+							: { backgroundColor: "rgba(0, 0, 0, 1)" },
 					]}
 				/>
 			</View>

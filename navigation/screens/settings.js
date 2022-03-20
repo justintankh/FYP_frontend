@@ -1,6 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { Button, Image, StyleSheet, Text, View, TextInput, ImageBackground } from "react-native";
+import { Button, Image, StyleSheet, Text, View, TextInput, ImageBackground ,Dimensions} from "react-native";
+
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function SettingsScreen(props) {
 	const username = props.route.params.username;
@@ -32,6 +34,13 @@ export default function SettingsScreen(props) {
 					style={styles.backgroundImage}
 					resizeMode="cover">
 					{/* <Text style={Object.assign({}, styles.whiteText, styles.mainText)}>Login to CheckIt !</Text> */}
+					<Text style={styles.usernameText}>{username}</Text>
+					<Ionicons style={styles.profileLogo} name="person-circle-outline" size={120} color={"white"} />
+					<View style={styles.button}>
+						<Button
+							title='Message'
+						/>
+					</View>
 					<View style={styles.button}>
 						<Button
 							title={refreshPage}
@@ -44,6 +53,8 @@ export default function SettingsScreen(props) {
 							}}
 						/>
 					</View>
+					<Ionicons style={styles.messageLogo} name="chatbox-ellipses-outline" size={48} color={"black"} />
+					<Ionicons style={styles.exitLogo} name="exit-outline" size={48} color={"red"} />
 				</ImageBackground>
 			</View>
 		);
@@ -52,6 +63,8 @@ export default function SettingsScreen(props) {
 	return renderLogOut();
 }
 
+const Devicewidth = Math.round(Dimensions.get("window").width);
+const Deviceheight = Math.round(Dimensions.get("window").height);
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -61,8 +74,12 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	button: {
-		marginHorizontal: 10,
-		marginVertical: 1,
+		height: 50,
+		width: Devicewidth / 2,
+		marginHorizontal: 20,
+		marginVertical: 10,
+		bottom: Deviceheight / 12,
+		left : Devicewidth / 25,
 		// marginBottom: 300,
 	},
 	backgroundImage: {
@@ -71,4 +88,26 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		resizeMode: "stretch", // or 'stretch'
 	},
+	profileLogo:{		
+		position: "absolute",
+		top: Deviceheight / 10,
+		right : Devicewidth / 1.5,
+	},
+	exitLogo:{		
+		position: "absolute",
+		top: Deviceheight / 2.4,
+		left : Devicewidth / 8,
+	},
+	messageLogo:{		
+		position: "absolute",
+		top: Deviceheight / 3,
+		left : Devicewidth / 8,
+	},
+	usernameText:{
+		position: "absolute",
+		top: Deviceheight / 6.5,
+		right : Devicewidth / 2.4,
+		fontSize: 28,
+		color: 'white',
+	}
 });

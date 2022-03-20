@@ -274,7 +274,7 @@ export default function InventoryScreen(props) {
 						{selectedPCode.length == 0 ? null : (
 							<View style={{ position: "absolute", left: (Devicewidth / 100) * 5 }}>
 								<Button
-									color="black"
+									color="red"
 									title="Del"
 									onPress={() => {
 										Alert.alert("Delete from Inventory", "Are you sure?", [
@@ -301,16 +301,16 @@ export default function InventoryScreen(props) {
 								style={{
 									fontSize: 20,
 									position: "absolute",
-									right: (Devicewidth / 100) * 43,
+									right: (Devicewidth / 100) * 40,
 									backgroundColor: "white",
 									borderRadius: 90,
-									width: 30,
+									width: 20,
 									height: 30,
 									elevation: 3,
 									zIndex: 3,
 									textAlign: "center",
 									textAlignVertical: "center",
-									color: "orange",
+									color: "black",
 								}}>
 								{`${selectedPCode.length}`}
 							</Text>
@@ -327,7 +327,7 @@ export default function InventoryScreen(props) {
 									borderRadius: 5,
 									backgroundColor: "orange",
 									flexDirection: "row",
-									width: (Devicewidth / 100) * 50,
+									width: (Devicewidth / 100) * 45,
 									// alignContent: "flex-start",
 									alignItems: "center",
 								}}
@@ -341,23 +341,15 @@ export default function InventoryScreen(props) {
 									style={[
 										styles.recipeText,
 										{
-											color: "white",
+											fontWeight:"bold",
+											color: "black",
 											fontSize: 15,
 											right: -(Devicewidth / 100) * 3,
 											paddingLeft: (Devicewidth / 100) * 5,
 											alignContent: "flex-start",
 											fontFamily: "AvenirNext",
 										},
-									]}>{`   Check Recipe   `}</Text>
-								<AntDesign
-									name="arrowright"
-									size={24}
-									color="white"
-									style={{
-										top: 2,
-										right: -(Devicewidth / 100) * 3,
-									}}
-								/>
+									]}>{`   Check Recipes`}</Text>
 							</TouchableOpacity>
 						)}
 					</View>
@@ -376,12 +368,8 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		fontFamily: "Caveat",
 		color: "black",
-		// textShadowColor: "rgba(0, 0, 0, 0.75)",
-		// textShadowOffset: { width: -1, height: 1 },
-		// textShadowRadius: 10,
 	},
 	menu: {
-		// backgroundColor: "#FF880D",
 		position: "absolute",
 		backgroundColor: "rgba(255, 255, 255, 1)",
 		height: (Deviceheight / 100) * 8,
